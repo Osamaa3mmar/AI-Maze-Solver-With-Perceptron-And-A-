@@ -1,35 +1,66 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import axios from "axios";
+import { useState } from "react";
+import { Bounce, toast, ToastContainer, Zoom } from "react-toastify";
+import { read, utils } from "xlsx";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [trainingData,setTrainingData]=useState([]);
+  const [data,setData]=useState(null);
+  const [loading,setLoading]=useState(false);
+  const [error,setError]=useState(null);
+  const handleDataInput=(e)=>{
+    const file=e.target.files[0];
+    const reader=new FileReader();
+    reader.readAsArrayBuffer(file);
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    reader.onload=(e)=>{
+      const arrayBuffer=e.target.result;
+      const workBook=read(arrayBuffer,{type:"array"});
+      const sheetName=workBook.SheetNames[0];
+      const sheet=workBook.Sheets[sheetName];
+      const data=utils.sheet_to_json(sheet,{
+        header:1
+      });
+      toast.success("Data Read Success!");
+      setTrainingData(data);
+    }
+    
+  }
+const TrainData=async()=>{
+try{
+  setLoading(true);
+  const {data}=await axios.post('http://localhost:3003/test',{
+    trainingData
+  });
+  console.log(data);
+}catch(error){
+  toast.error(error?.response?.data?.message);
+  console.log(error);
+}
+finally{
+  setLoading(false);
+}
 }
 
-export default App
+
+  return (
+    <div>
+      <input type="file" onChange={handleDataInput} accept=".xlsx" />
+    <button onClick={TrainData}>Train Data</button>
+
+      <ToastContainer
+position="bottom-right"
+autoClose={3000}
+hideProgressBar={false}
+closeOnClick={true}
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="light"
+transition={Zoom}
+closeButton={false}
+/>
+    </div>
+  )
+}
