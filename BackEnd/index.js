@@ -1,31 +1,15 @@
 import express from 'express';
 import cors from 'cors';
-const app= express();
-app.use(express.json());
+import { initApp } from './src/index.router.js';
+const app=express();
+const port=6565;
 app.use(cors());
-app.post("/test",(req,res)=>{
-    try{
-        const {trainingData}=req.body;
-        const filterdData=trainingData.slice(1);
-        console.log(filterdData)
-    return res.status(200).json({message:trainingData});
-    }catch(error){
-        console.log(error);
-        return res.status(500).json({message:"Server Error !"});
-    }
-});
+app.use(express.json());
+
+initApp(app);
 
 
 
-
-app.listen(3003,()=>{
-    console.log("listing on port 3003 . . .");
+app.listen(port,()=>{
+    console.log("Listening on port "+ port+ ".");
 })
-
-
-
-
-
-
-
-
