@@ -1,86 +1,515 @@
-export class Perceptron{
-
-    constructor(){
-        this.epoch=20;
-        this.learningRate=1;
-        this.whights=[];
-        this.errorRate=0;
-        for (let i=0;i<4;i++){
-            this.whights.push(Number((Math.random() - 0.5).toFixed(5)));
-        }  
-    }
-    epochSetter (epoch){
-        this.epoch=epoch;
-    }
-    learningRateSetter (learningRate){
-        this.learningRate=learningRate;
-    }
-
-    pushData(data){ 
-        if(this.trainingData==null){
-            this.trainingData=data;
-            console.log("new Data");
+export class Perceptron {
+    constructor(inputSize=3){
+        this.inputSize = inputSize;
+        this.epochs=0;
+        this.data=[];
+        this.weights=[];
+        this.learningRate=0;
+        this.isLearned=false;
+        for(let i=0;i<=inputSize;i++){
+            this.weights.push(Math.random()-0.5);//this give me from -0.5 to 0.49999 the last one is for bias
         }
     }
+    setData(data){
+        this.data = data;
+    }
+    setEpochs(epochs){
+        this.epochs = epochs;
+    }
+    setLearningRate(learningRate){
+        this.learningRate = learningRate;
+    }
+    train(data){
+        let values=[];
+        let error=0;
+        for(let i=0;i<this.epochs;i++){
+            
+            
+            data.map((element,index)=>{
+                values=[element[0],element[1],element[2],1];//bias value 1
+                let yActual=this.compute(values);
+                if(yActual!=element[3]){
+                    error++;
+                    this.editWeights((element[3]-yActual),values);
+                }
+                
+            })
+            if(error==0){
+                break;
+            }
+            //console.log(error,i);
+        }
+        return (error/(this.epochs*data.length))*100;
+    }
+    
+    learn(){
+        let div=Math.floor(this.data.length*0.7);
+       let trainData=this.data.slice(0,div);
+       let test=this.data.slice(div,this.data.length);
+       let error=this.train(trainData);
+       let accuracy=this.testAll(test);
+       return {error,accuracy};
+
+    }
+
+    testAll(data){
+       // console.log("object")
+       let correct=0;
+        data.map((element)=>{
+           // console.log("object")
+            let x=this.test([element[0],element[1],element[2]]);
+            if(x==element[3]){
+                correct++;
+               // console.log(element);
+            }
+
+        })
+        let accuracy = (correct / data.length) * 100;
+    return `Test Accuracy: ${accuracy.toFixed(2)}%`
+    }
+    compute(values){//values is array have the x values and 1 for bias
+        let sum=0;
+        values.map((element,index)=>{
+            sum+=element*this.weights[index];
+        })
+        return this.step(sum);
+    }
+
     step(sum){
         return sum>0?1:0;
     }
-    compute(val1,val2,val3,val4){
-        let sum=val1+val2+val3+val4;
-        return this.step(sum);
+    editWeights(error,values){
+        let deltaWeight=0;
+        values.map((element,index)=>{
+            deltaWeight=element*this.learningRate*error;
+            this.weights[index]+=deltaWeight;
+        })
+
     }
-    editWights(error,values){
-        let deltaWight;
-        for(let i=0;i<values.length;i++){
-            deltaWight=error*this.learningRate*values[i];
-            this.whights[i]=this.whights[i]+deltaWight;
-        }
+
+    print(){
+        console.log("weights:",this.weights);
     }
-    learn(){
-        let val1;
-        let val2;
-        let val3;
-        let alpha=1*this.whights[3];
-        let yActual;
-        let errorCount=0;
-        for(let i=0;i<this.epoch;i++){
-            errorCount=0;
-            this.trainingData.forEach((info,index) => {
-                val1=info[0]*this.whights[0];
-                val2=info[1]*this.whights[1];
-                val3=info[2]*this.whights[2];
-                yActual=this.compute(val1,val2,val3,alpha);
-                if(yActual!=info[3]){
-                    console.log();
-                    errorCount++;
-                    let error=info[3]-yActual;
-                    this.editWights(error,[info[0],info[1],info[2],1]);
-                }
-            });
-        }
-        console.log("here",errorCount,this.trainingData.length);
-        return (1-(errorCount/this.trainingData.length));
+    getWeights(){
+        return this.weights;
     }
 
 
-    print (){
-        console.log("Whights: ", this.whights);
+    test(element){
+        let values=[...element,1]//add 1 to the array for the bias
+        return this.compute(values);
     }
-    getWeights (){
-        return this.whights;
+    getIsLearned(){
+        return this.isLearned;
     }
-
-
-
-    test(values) {
-        let sum = this.whights[3];
-        for (let i = 0; i < values.length; i++) {
-            sum += values[i] * this.whights[i];
-        }
-        
-        return this.step(sum);
+    setIsLearned(value){
+        this.isLearned=value;
     }
-    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// export class Perceptron{
+
+//     constructor(inputSize=3){
+//         this.epoch=20;
+//         this.learningRate=0.1;
+//         this.whights=[];
+//         this.errorRate=0;
+//         for (let i=0;i<=inputSize;i++){
+//             this.whights.push(Math.random() - 0.5);
+//         }  
+//     }
+//     epochSetter (epoch){
+//         this.epoch=epoch;
+//     }
+//     learningRateSetter (learningRate){
+//         this.learningRate=learningRate;
+//     }
+
+//     pushData(data){ 
+//         if(this.trainingData==null){
+//             this.trainingData=data;
+//             console.log("new Data");
+//         }
+//     }
+//     step(sum){
+//         return sum>0?1:0;
+//     }
+//     compute(val1,val2,val3,val4){
+//         let sum=val1+val2+val3+val4;
+//         return this.step(sum);
+//     }
+//     editWights(error,values){
+//         let deltaWight;
+//         for(let i=0;i<values.length;i++){
+//             deltaWight=error*this.learningRate*values[i];
+//             this.whights[i]=this.whights[i]+deltaWight;
+//         }
+//     }
+//     learn(){
+//         let val1;
+//         let val2;
+//         let val3;
+//         let alpha=1*this.whights[3];
+//         let yActual;
+//         let errorCount=0;
+//         console.log(this.epoch)
+//         for(let i=0;i<1;i++){
+            
+//             this.trainingData.forEach((info) => {
+//                 val1=info[0]*this.whights[0];
+//                 val2=info[1]*this.whights[1];
+//                 val3=info[2]*this.whights[2];
+//                 yActual=this.compute(val1,val2,val3,alpha);
+//                 if(yActual!=info[3]){
+//                     errorCount++;
+//                     let error=info[3]-yActual;
+//                     this.editWights(error,[info[0],info[1],info[2],1]);
+//                 }
+//             });
+//             console.log(errorCount,"| i:"+i);
+//             if(errorCount<=0.01){
+//                 console.log("stoped before");
+//                 break;
+//             }
+//         }
+//         console.log("here",errorCount,this.trainingData.length);
+//         return (1-(errorCount/this.trainingData.length));
+//     }
+
+
+//     print (){
+//         console.log("Whights: ", this.whights);
+//     }
+//     getWeights (){
+//         return this.whights;
+//     }
+
+
+
+//     test(values) {
+//         let sum = this.whights[3];
+//         for (let i = 0; i < values.length; i++) {
+//             sum += values[i] * this.whights[i];
+//         }
+        
+//         return this.step(sum);
+//     }
+    
+// }
+
+
+
 
 
