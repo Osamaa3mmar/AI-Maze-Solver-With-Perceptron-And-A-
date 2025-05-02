@@ -13,6 +13,7 @@ const MazeContextProvider=({children})=>{
     const [maze,setMaze]=useState(null);
     const generateMaze=async ()=>{
         try{
+            setMaze(null);
             const {data}=await axios.post("http://localhost:6565/maze/generate",{row,col});
             toast.success(data.message);
             console.log(data);

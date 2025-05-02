@@ -1,8 +1,6 @@
 import { Box } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import Brick from "./../../public/Brick.png";
-import Grass from "./../../public/Grass.png";
-import Water from "./../../public/Water.png";
+
 import Tile from "./Tile";
 import { MazeContext } from "../MazeContext";
 
@@ -16,7 +14,7 @@ export default function Maze() {
     let newCells = [];
     newCells=maze?.map((line)=>{
       return line.map((cell,i)=>{
-        return <Tile key={i} size={tileSize} distanceToObstacle={cell.distanceToObstacle} elevation={cell.elevation} img={cell.type=="water"?Water:cell.type=="grass"?Grass:Brick} />
+        return <Tile type={cell.type} key={i} size={tileSize} distanceToObstacle={cell.distanceToObstacle} elevation={cell.elevation}  />
       })
     })
     // for (let i = 0; i < row * col; i++) {

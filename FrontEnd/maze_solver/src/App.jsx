@@ -24,7 +24,7 @@ export default function App() {
         </MazeContextProvider>
       </ThemeProvider>
       <ToastContainer
-position="bottom-right"
+position="bottom-left"
 autoClose={3000}
 hideProgressBar={false}
 closeOnClick={true}

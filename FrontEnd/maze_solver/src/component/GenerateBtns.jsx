@@ -14,7 +14,7 @@ export default function GenerateBtns({flag,setLr,setEpoch,epoch,lr}) {
         }} fullWidth disabled={flag==null}  type="text"  label="Epoch"/>
         </Stack>
 <Stack direction={"row"} gap={2}>
-        <Button onClick={()=>{generateMaze()}}>Generate Maze</Button>
+        <Button variant="outlined" onClick={()=>{generateMaze()}}>Generate Maze</Button>
         <Button variant="contained">Solve</Button>
         <TextField  value={row} label={"Row"} onChange={(e)=>{setRow(e.target.value)}} sx={{width:"100px"}}/>
         <TextField value={col} label={"Col"} onChange={(e)=>{setCol(e.target.value)}} sx={{width:"100px"}}/>
