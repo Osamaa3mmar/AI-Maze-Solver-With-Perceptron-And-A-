@@ -22,24 +22,37 @@ export class Perceptron {
     train(data){
         let values=[];
         let error=0;
+        let totalError=0;
+        let totalLoss=0;
         for(let i=0;i<this.epochs;i++){
-            
-            
+            let epochLoss=0;
+            error=0;
             data.map((element,index)=>{
                 values=[element[0],element[1],element[2],1];//bias value 1
                 let yActual=this.compute(values);
-                if(yActual!=element[3]){
+                let yExpected = element[3];
+
+                let loss = Math.pow(yExpected - yActual, 2);
+            epochLoss += loss;
+                if(yActual!==yExpected){
                     error++;
-                    this.editWeights((element[3]-yActual),values);
+                    this.editWeights((yExpected-yActual),values);
                 }
-                
             })
+            totalError+=error;
+            totalLoss+=epochLoss;
+            let avgEpochLoss = epochLoss / data.length;
             if(error==0){
+                console.log("object");
                 break;
             }
             //console.log(error,i);
         }
-        return (error/(this.epochs*data.length))*100;
+        let avgTrainingLoss = totalLoss / (this.epochs * data.length);
+
+        return{error:((totalError/(this.epochs*data.length))*100).toFixed(2),
+            loss:avgTrainingLoss.toFixed(8)
+        };
     }
     
     learn(){
@@ -65,7 +78,7 @@ export class Perceptron {
 
         })
         let accuracy = (correct / data.length) * 100;
-    return `Test Accuracy: ${accuracy.toFixed(2)}%`
+    return  accuracy.toFixed(2);
     }
     compute(values){//values is array have the x values and 1 for bias
         let sum=0;

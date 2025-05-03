@@ -29,3 +29,6 @@ export const cancele=(req,res)=>{
     cell.setIsLearned(false);
     return res.status(200).json({message:"Data Cleared !"});
 }
+
+
+export {cell};

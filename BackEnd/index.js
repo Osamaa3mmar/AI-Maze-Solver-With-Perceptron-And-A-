@@ -14,3 +14,6 @@ app.listen(port,()=>{
     console.log("Listening on port "+ port+ ".");
 })
 
+// import { Tile } from "./Tile.js";
+
+// const osama=new Tile();
