@@ -34,14 +34,14 @@ export class Perceptron{
         let val1;
         let val2;
         let val3;
-        let val4=1*this.whights[3];
+        let alpha=1*this.whights[3];
         let yActual;
         for(let i=0;i<this.epoch;i++){
             this.trainingData.forEach((info) => {
                 val1=info.Terrain*this.whights[0];
                 val2=info.Elevation*this.whights[1];
                 val3=info.ObsticalDistance*this.whights[2];
-                yActual=this.compute(val1,val2,val3,val4);
+                yActual=this.compute(val1,val2,val3,alpha);
                 if(yActual!=info.label){
                     let error=info.label-yActual;
                     this.editWights(error,[info.Terrain,info.Elevation,info.ObsticalDistance,1]);

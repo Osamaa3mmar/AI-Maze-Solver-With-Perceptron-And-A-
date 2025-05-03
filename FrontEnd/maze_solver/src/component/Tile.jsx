@@ -7,15 +7,14 @@ import Water from "./../../public/Water.png";
 import Start from "./../../public/Start.png";
 import End from "./../../public/End.png";
 import {  useState } from "react";
-export default function Tile({type, size,elevation,distanceToObstacle }) {
+export default function Tile({_type, size,_elevation,_distanceToObstacle }) {
   const [status,setStatus]=useState(null);
-  console.log(type)
+  console.log(_type)
   const checkSave=async()=>{
     try{
       
-      const type2= type=="water"||type=='obstacle'?1:0;
-      let values=[type2,elevation,distanceToObstacle];
-      console.log(values);
+      const type2= _type=="water"||_type=='obstacle'?1:0;
+      let values=[type2,_elevation,_distanceToObstacle];
       const {data}=await axios.post("http://localhost:6565/train/test",{values});
       console.log(data);
       if(data.result==1){
@@ -45,7 +44,7 @@ export default function Tile({type, size,elevation,distanceToObstacle }) {
     >
       {/* <p>{distanceToObstacle}</p>
       <p>{elevation}</p> */}
-      <img src={type=="water"?Water:type=="grass"?Grass:type=='start'?Start:type=='end'?End:Brick} className={style.img} alt="" />
+      <img src={_type=="water"?Water:_type=="grass"?Grass:_type=='start'?Start:_type=='end'?End:Brick} className={style.img} alt="" />
     </Box>
   );
 }
