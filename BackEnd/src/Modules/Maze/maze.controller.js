@@ -33,8 +33,12 @@ export const generateMaze=(req,res)=>{
     maze.push(rowArray);
    }
    if(obstacles.length==0){
-    let c=Math.floor(Math.random()*row);
-    let v=Math.floor(Math.random()*col);
+    let c;
+    let v;
+    do{
+    c=Math.floor(Math.random()*row);
+    v=Math.floor(Math.random()*col);
+    }while((c==s[0]&&v==s[1])||(c==e[0]&&v==e[1]))
 const tile=maze[c][v];
 tile.type='obstacle';
 tile.distanceToObstacle = 0;
@@ -162,7 +166,7 @@ export const solve=(req,res)=>{
         const {maze,start,end,row,col}=req.body;
          let endOfPath=aStar(maze,start,end,row,col);
         if(endOfPath==null){
-        return res.status(200).json({message:"There is no save path !"})
+        return res.status(200).json({message:"There is no save path !",er:1})
         }
         let path=[];
         let current=endOfPath;
