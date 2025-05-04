@@ -1,13 +1,14 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { readFile, utils } from 'xlsx';
 import BackupIcon from '@mui/icons-material/Backup';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import DescriptionIcon from '@mui/icons-material/Description';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { MazeContext } from '../MazeContext';
 export default function FileSelector({epoch,learnRate,setTrainData,TrainData,setWeights}) {
     const [fileName,setFileName]=useState(null);
-    const [status,setStatus]=useState(false);
+    const {isTrained,setIsTrained}=useContext(MazeContext);
     const [loading,setLoading]=useState(false);
     const [rate,setRate]=useState(0);
     const learn=async ()=>{
@@ -16,7 +17,7 @@ export default function FileSelector({epoch,learnRate,setTrainData,TrainData,set
             const {data}=await axios.post("http://localhost:6565/train/send",{data:TrainData,learnRate,epoch});
             setWeights(data.weights);
             console.log(data.weights);
-            setStatus(true);
+            setIsTrained(true);
             toast.success(data.message);
             setRate(data.rate);
             console.log(data);
@@ -52,7 +53,7 @@ export default function FileSelector({epoch,learnRate,setTrainData,TrainData,set
           toast.error(error.response.data.message);
         }
         setTrainData(null);
-        setStatus(false);
+        setIsTrained(false);
         setRate(0);
       }
 
@@ -66,26 +67,26 @@ export default function FileSelector({epoch,learnRate,setTrainData,TrainData,set
           
           </Box>
           <Stack gap={2}>
-            <Button size='medium' fullWidth variant='contained' disabled={status} loading={loading} onClick={learn}>Train Perceptron</Button>
+            <Button size='medium' fullWidth variant='contained' disabled={isTrained} loading={loading} onClick={learn}>Train Perceptron</Button>
             <Button size='medium' fullWidth variant='outlined' onClick={deleteData}>Cancel</Button>
             </Stack>
           <Stack gap={1} alignItems={'flex-start'} >
-            {status==false?
+            {isTrained==false?
             <Box sx={{display:"flex",alignItems:"center",gap:"4px"}}>
-            <Box sx={{outline:`2px solid ${status?"rgba(0,255,0,0.6)":"rgba(255,0,0,0.6)"}`,borderRadius:"50%",width:"8px ",height:"8px",background:`${status?"rgba(0,255,0,0.2)":"rgba(255,0,0,0.2)"}`}}></Box>
+            <Box sx={{outline:`2px solid ${isTrained?"rgba(0,255,0,0.6)":"rgba(255,0,0,0.6)"}`,borderRadius:"50%",width:"8px ",height:"8px",background:`${isTrained?"rgba(0,255,0,0.2)":"rgba(255,0,0,0.2)"}`}}></Box>
             <Typography fontWeight={500} sx={{}} >Perceptron Untrained</Typography>
           </Box>
             :<>
              <Box sx={{display:"flex",alignItems:"center",gap:"4px"}}>
-             <Box sx={{outline:`2px solid rgba(0,255,0,0.6)`,borderRadius:"50%",width:"8px ",height:"8px",background:`${status?"rgba(0,255,0,0.2)":"rgba(255,0,0,0.2)"}`}}></Box>
+             <Box sx={{outline:`2px solid rgba(0,255,0,0.6)`,borderRadius:"50%",width:"8px ",height:"8px",background:`${isTrained?"rgba(0,255,0,0.2)":"rgba(255,0,0,0.2)"}`}}></Box>
              <Typography fontWeight={500} sx={{}} >Training accuracy: {rate.accuracy}%</Typography>
            </Box>
            <Box sx={{display:"flex",alignItems:"center",gap:"4px"}}>
-             <Box sx={{outline:`2px solid rgba(0,255,0,0.6)`,borderRadius:"50%",width:"8px ",height:"8px",background:`${status?"rgba(0,255,0,0.2)":"rgba(255,0,0,0.2)"}`}}></Box>
+             <Box sx={{outline:`2px solid rgba(0,255,0,0.6)`,borderRadius:"50%",width:"8px ",height:"8px",background:`${isTrained?"rgba(0,255,0,0.2)":"rgba(255,0,0,0.2)"}`}}></Box>
              <Typography fontWeight={500} sx={{}} >Test Data Error Rate : {rate.error.error}%</Typography>
            </Box>
            <Box sx={{display:"flex",alignItems:"center",gap:"4px"}}>
-             <Box sx={{outline:`2px solid rgba(0,255,0,0.6)`,borderRadius:"50%",width:"8px ",height:"8px",background:`${status?"rgba(0,255,0,0.2)":"rgba(255,0,0,0.2)"}`}}></Box>
+             <Box sx={{outline:`2px solid rgba(0,255,0,0.6)`,borderRadius:"50%",width:"8px ",height:"8px",background:`${isTrained?"rgba(0,255,0,0.2)":"rgba(255,0,0,0.2)"}`}}></Box>
              <Typography fontWeight={500} sx={{}} >Mean Squared Error (MSE) : {rate.error.loss}%</Typography>
            </Box>
            </>

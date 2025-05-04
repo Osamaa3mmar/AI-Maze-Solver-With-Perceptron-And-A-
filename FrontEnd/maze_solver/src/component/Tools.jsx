@@ -11,7 +11,7 @@ export default function Tools() {
     const [trainData,setTrainData]=useState(null);
     const [weights,setWeights]=useState(null);
     const [lr,setLr]=useState(0.1);
-    const [epoch,setEpoch]=useState(100);
+    const [epoch,setEpoch]=useState(40);
     
   return (
     <form action=""><Stack gap={3} sx={{background:"#f9f9f9",padding:"20px 15px ",borderRadius:"10px"}}>
