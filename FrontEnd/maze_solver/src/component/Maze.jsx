@@ -13,6 +13,7 @@ export default function Maze() {
     let newCells = [];
     newCells=maze?.map((line)=>{
       return line.map((cell,i)=>{
+        console.log(cell,"here")
         return <Tile  key={i} size={tileSize} {...cell}   />
       })
     })

@@ -1,18 +1,22 @@
 import { Button, Stack, TextField } from "@mui/material";
-import { useContext } from "react";
+import { useContext,useState } from "react";
 import { MazeContext } from "../MazeContext";
 import { toast } from "react-toastify";
 
 export default function GenerateBtns({flag,setLr,setEpoch,epoch,lr}) {
   const {generateMaze,maze,isTrained}=useContext(MazeContext);
+  const [loading,setLoading] = useState(false);
   const {setRow,setCol,col,row,solveMaze,play}=useContext(MazeContext);
-  const solve =()=>{
+  const solve =async ()=>{
     if(maze){
-      solveMaze();
+      setLoading(true);
+      await solveMaze();
+      setLoading(false);
     }else{
       toast.info("Generate Maze Before !");
     }
   }
+  console.log(maze);
   return (
     <Stack gap={2}>
       <Stack direction={"row"} gap={2}>
@@ -23,7 +27,7 @@ export default function GenerateBtns({flag,setLr,setEpoch,epoch,lr}) {
         </Stack>
 <Stack direction={"row"} gap={2}>
         <Button variant="outlined" onClick={()=>{generateMaze()}}>Generate Maze</Button>
-        <Button variant="contained" disabled={!(maze&&isTrained&&!play)} onClick={solve}>Solve</Button>
+        <Button variant="contained" disabled={!(isTrained)} loading={loading} onClick={solve}>Solve</Button>
         <TextField  value={row} label={"Row"} onChange={(e)=>{setRow(e.target.value)}} sx={{width:"100px"}}/>
         <TextField value={col} label={"Col"} onChange={(e)=>{setCol(e.target.value)}} sx={{width:"100px"}}/>
         </Stack>

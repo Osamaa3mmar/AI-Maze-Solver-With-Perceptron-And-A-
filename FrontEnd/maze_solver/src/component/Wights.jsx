@@ -10,7 +10,7 @@ export default function Wights({weights}) {
     <Stack gap={1.5} flex={1} >
         <div>
         <Typography color="primary" fontWeight={600} fontSize={22} variant="h6">Weights</Typography>
-        <FormControlLabel control={<Checkbox onChange={toggle} checked={custom} />} label="Custom Values ?" />
+        {/* <FormControlLabel control={<Checkbox onChange={toggle} checked={custom} />} label="Custom Values ?" /> */}
         </div>
         
         <Stack direction={"row"} gap={1}>

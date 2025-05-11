@@ -64,10 +64,10 @@ export class Tile{
     get location(){
         return this._location;
     }
-     GenerateRandomType = () => {
+    GenerateRandomType = () => {
         const rand = Math.random();
-        if (rand < 0.8)  this.type="grass";
-        else if (rand < 0.9) this.type="water";
+        if (rand < 0.7)  this.type="grass";
+        else if (rand < 0.8) this.type="water";
         else this.type="obstacle";
     };
     GenerateRandomElevation = () => {this.elevation=Math.floor(Math.random() * 11)}; 

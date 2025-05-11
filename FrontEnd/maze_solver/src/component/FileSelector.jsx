@@ -81,10 +81,10 @@ export default function FileSelector({epoch,learnRate,setTrainData,TrainData,set
              <Box sx={{outline:`2px solid rgba(0,255,0,0.6)`,borderRadius:"50%",width:"8px ",height:"8px",background:`${isTrained?"rgba(0,255,0,0.2)":"rgba(255,0,0,0.2)"}`}}></Box>
              <Typography fontWeight={500} sx={{}} >Training accuracy: {rate.accuracy}%</Typography>
            </Box>
-           <Box sx={{display:"flex",alignItems:"center",gap:"4px"}}>
+           {/* <Box sx={{display:"flex",alignItems:"center",gap:"4px"}}>
              <Box sx={{outline:`2px solid rgba(0,255,0,0.6)`,borderRadius:"50%",width:"8px ",height:"8px",background:`${isTrained?"rgba(0,255,0,0.2)":"rgba(255,0,0,0.2)"}`}}></Box>
              <Typography fontWeight={500} sx={{}} >Test Data Error Rate : {rate.error.error}%</Typography>
-           </Box>
+           </Box> */}
            <Box sx={{display:"flex",alignItems:"center",gap:"4px"}}>
              <Box sx={{outline:`2px solid rgba(0,255,0,0.6)`,borderRadius:"50%",width:"8px ",height:"8px",background:`${isTrained?"rgba(0,255,0,0.2)":"rgba(255,0,0,0.2)"}`}}></Box>
              <Typography fontWeight={500} sx={{}} >Mean Squared Error (MSE) : {rate.error.loss}%</Typography>

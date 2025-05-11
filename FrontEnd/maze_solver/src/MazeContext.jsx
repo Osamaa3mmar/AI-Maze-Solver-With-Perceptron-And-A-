@@ -18,7 +18,8 @@ const MazeContextProvider=({children})=>{
     const [path,setPath]=useState(null);
     const [play,setPlay]=useState(false);
     const [currentStep, setCurrentStep] = useState(null);
-
+    const [mode,setMode]=useState(false);
+    const [type,setType]=useState('start');
     const maze=useMemo(()=>{
         
      if(path){
@@ -62,8 +63,8 @@ const MazeContextProvider=({children})=>{
         setCurrentStep(null);
         setPlay(false);
     }
-    const generateMaze=async ()=>{
-        try{
+    const generateRandom=async()=>{
+ try{
             setPlay(false);
             setPath(null);
             setAllMaze(null);
@@ -77,8 +78,31 @@ const MazeContextProvider=({children})=>{
             toast.error(error.response.data.message);
         }
     }
-    const solveMaze=async()=>{
-        if(maze&&start&&end&&col&&row){
+    const generateCustom=async()=>{
+            try{
+            setPlay(false);
+            setPath(null);
+            setAllMaze(null);
+            const {data}=await axios.post("http://localhost:6565/maze/generatecustom",{row,col});
+            toast.success(data.message);
+            console.log(data);
+            setAllMaze(data.maze);
+            setStart(data.start);
+            setEnd(data.end);
+        }catch(error){
+            toast.error(error.response.data.message);
+        }
+    }
+    const generateMaze=async ()=>{
+       if(mode){
+           generateCustom();
+    }
+    else{
+           generateRandom();
+       }
+    }
+    const solve=async ()=>{
+if(maze&&start&&end&&col&&row){
         try{
             const {data}=await axios.post("http://localhost:6565/maze/solve",{row,col,start,end,maze});
             if(data.er){
@@ -95,9 +119,34 @@ const MazeContextProvider=({children})=>{
     }else{
         toast.warning("Enter All Data !");
     }
+    }
+    const solveMaze=async()=>{
+        if(mode){
+            solveCustomMaze();
+        }else
+        solve();
+}
+  const solveCustomMaze=async()=>{
+        if(maze&&start&&end&&col&&row){
+        try{
+            const {data}=await axios.post("http://localhost:6565/maze/solvecustom",{row,col,start,end,maze});
+            if(data.er){
+                toast.error(data.message);
+                setPlay(false);
+
+            }
+            setPath(data.path);
+            console.log(data.path);
+            makePlayAnimation(data.path);
+        }catch(error){
+            console.log(error);
+        }
+    }else{
+        toast.warning("Enter All Data !");
+    }
 }
     return (
-        <MazeContext.Provider  value={{play,isTrained,setIsTrained,end,start,col,row,setCol,setRow,maze,generateMaze,solveMaze}}>
+        <MazeContext.Provider  value={{setAllMaze,allMaze,type,setType,mode,setMode,play,isTrained,setIsTrained,end,setEnd,setStart,start,col,row,setCol,setRow,maze,generateMaze,solveMaze}}>
             {children}
         </MazeContext.Provider>
     )

@@ -1,5 +1,24 @@
 import { Tile } from "../../../Tile.js";
 import { cell } from "../Training/training.controller.js";
+export const generateCustomMaze=(req,res)=>{
+    const {row,col}=req.body;
+   const maze=[];
+   if(!row||!col){
+    return res.status(400).json({message:"Enter Size !"});
+   }
+   for(let i=0;i<row;i++){
+    let rowArray=[];
+    for(let j=0;j<col;j++){
+        let temp=new Tile();
+        temp.location={i,j};
+        temp.type="grass";
+        temp.distanceToObstacle=Infinity;
+        rowArray.push(temp);
+    }
+    maze.push(rowArray);
+   }
+    return res.status(200).json({message:"Generate success !", maze });
+}
 export const generateMaze=(req,res)=>{
     const {row,col}=req.body;
    const maze=[];
@@ -127,8 +146,6 @@ const aStar=(maze,start,end,row,col)=>{
 
 
     while(openList.length>0){
-        console.log(openList);
-        console.log("here");
         let minF=Infinity;
         let currentTile=null;
         openList.forEach((tile)=>{
@@ -161,9 +178,13 @@ const aStar=(maze,start,end,row,col)=>{
 }
 
 
+
+
+
 export const solve=(req,res)=>{
     try{
         const {maze,start,end,row,col}=req.body;
+        console.log(maze,'line 185')
          let endOfPath=aStar(maze,start,end,row,col);
         if(endOfPath==null){
         return res.status(200).json({message:"There is no save path !",er:1})
@@ -187,10 +208,72 @@ export const solve=(req,res)=>{
 
 
 
+const calcObsticalDestance=(maze,start,end,row,col)=>{
+
+
+   const obstacles=[];
+   if(!row||!col){
+    return res.status(400).json({message:"Enter Size !"});
+   }
+   
+   for(let i=0;i<row;i++){
+    for(let j=0;j<col;j++){
+        if(maze[i][j]._type==="obstacle"){
+            obstacles.push({i,j});
+        }
+    }
+   }
+
+   for(let i=0;i<row;i++){
+    for(let j=0;j<col;j++){
+        const tile=maze[i][j];
+        if(tile._type==="obstacle"){
+            tile.distanceToObstacle=0;
+            continue;
+        }
+        let minVal=Infinity;
+        for(let x=0;x<obstacles.length;x++){
+            let dis=Math.abs(i-obstacles[x].i)+Math.abs(j-obstacles[x].j);
+            if(dis<minVal){
+                minVal=dis;
+            }
+        }
+        tile.distanceToObstacle=minVal;
+    }
+}
+
+    return maze;
 
 
 
+}
 
+
+export const solveCustom=(req,res)=>{
+    try{
+        const {maze,start,end,row,col}=req.body;
+        const newMaze=calcObsticalDestance(maze,start,end,row,col);
+        console.log(newMaze,'252')
+        let endOfPath=aStar(newMaze,start,end,row,col);
+        if(endOfPath==null){
+        return res.status(200).json({message:"There is no save path !",er:1})
+        }
+        let path=[];
+        let current=endOfPath;
+        while(true){
+            if(current._type=='start'){
+                path.push(current.location);
+                break;
+            }
+            path.push(current.location);
+            current=current.parent;
+        }
+        path.reverse();
+         return res.status(200).json({message:"success !",path})
+    }catch(error){
+        return res.status(500).json({message:"cd"})
+    }
+}
 
 
 
