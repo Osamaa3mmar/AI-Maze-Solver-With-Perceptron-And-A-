@@ -58,6 +58,13 @@ export class Tile{
     get distanceToObstacle(){
         return this._distanceToObstacle;
     }
+    set isDialog(d){
+    this._isDialog = d;
+}
+get isDialog(){
+    return this._isDialog;
+}
+
     set location(location){
         this._location=location;
     }
@@ -87,8 +94,8 @@ export class Tile{
         if(this.type=='start'){
             return 0;
         }
-        this.cost=this.parent.cost+1;
-        return this.parent.cost+1;
+        this.cost=this.parent.cost+this.isDialog?1.4:1;
+        return this.parent.cost+this.isDialog?1.4:1;
     }
     typeToNum(){
         return this.type=='water'||this.type=='obstacle'?1:0;

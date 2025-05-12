@@ -97,42 +97,68 @@ const typeToNum=(type)=>{
     return type=='water'||type=='obstacle'?1:0;
 
 }
-function getNeighbors(tile, maze, row, col) {
+function getNeighbors(tile, maze, row, col,number) {
     let neighbors=[];
     let temp;
-    console.log("here 77");
     if(tile.location.i-1>=0&&cell.test([typeToNum(maze[tile.location.i-1][tile.location.j]._type),tile.elevation,tile.distanceToObstacle])){
         temp=new Tile(maze[tile.location.i-1][tile.location.j]);
-        console.log(temp);
         temp.parent=tile;
         neighbors.push(temp);
-    }
 
+        temp.isDialog=false;
+
+    }
     
     if(tile.location.i+1<row&&cell.test([typeToNum(maze[tile.location.i+1][tile.location.j]._type),tile.elevation,tile.distanceToObstacle])){
         temp=new Tile(maze[tile.location.i+1][tile.location.j]);
-        console.log(temp);
         temp.parent=tile;
         neighbors.push(temp);
+        temp.isDialog=false;
     }
     if(tile.location.j-1>=0&&cell.test([typeToNum(maze[tile.location.i][tile.location.j-1]._type),tile.elevation,tile.distanceToObstacle])){
         temp=new Tile(maze[tile.location.i][tile.location.j-1]);
-        console.log(temp);
         temp.parent=tile;
         neighbors.push(temp);
+        temp.isDialog=false;
     }
     if(tile.location.j+1<col&&cell.test([typeToNum(maze[tile.location.i][tile.location.j+1]._type),tile.elevation,tile.distanceToObstacle])){
         temp=new Tile(maze[tile.location.i][tile.location.j+1]);
-        console.log(temp);
         temp.parent=tile;
         neighbors.push(temp);
+        temp.isDialog=false;
     }
     console.log("here 104");
-    
+    if(number==4)
+    return neighbors;
+
+    if(tile.location.j+1<col&&tile.location.i+1<row&&cell.test([typeToNum(maze[tile.location.i+1][tile.location.j+1]._type),tile.elevation,tile.distanceToObstacle])){
+        temp=new Tile(maze[tile.location.i+1][tile.location.j+1]);
+        temp.parent=tile;
+        neighbors.push(temp);
+        temp.isDialog=true;
+    }
+    if(tile.location.j-1>=0&&tile.location.i+1<row&&cell.test([typeToNum(maze[tile.location.i+1][tile.location.j-1]._type),tile.elevation,tile.distanceToObstacle])){
+        temp=new Tile(maze[tile.location.i+1][tile.location.j-1]);
+        temp.parent=tile;
+        neighbors.push(temp);
+        temp.isDialog=true;
+    }
+    if(tile.location.j+1<col&&tile.location.i-1>=0&&cell.test([typeToNum(maze[tile.location.i-1][tile.location.j+1]._type),tile.elevation,tile.distanceToObstacle])){
+        temp=new Tile(maze[tile.location.i-1][tile.location.j+1]);
+        temp.parent=tile;
+        neighbors.push(temp);
+        temp.isDialog=true;
+    }
+     if(tile.location.j-1>=0&&tile.location.i-1>=0&&cell.test([typeToNum(maze[tile.location.i-1][tile.location.j-1]._type),tile.elevation,tile.distanceToObstacle])){
+        temp=new Tile(maze[tile.location.i-1][tile.location.j-1]);
+        temp.parent=tile;
+        neighbors.push(temp);
+        temp.isDialog=true;
+    }
     return neighbors;
 }
 
-const aStar=(maze,start,end,row,col)=>{
+const aStar=(maze,start,end,row,col,walkType)=>{
     let openList=[];
     let closeList=[];
     let startTile=new Tile(maze[start.i][start.j]);
@@ -157,7 +183,6 @@ const aStar=(maze,start,end,row,col)=>{
             }
         })
         if (!currentTile) return null;
-        console.log(currentTile);
         console.log("line129")
         closeList.push(currentTile);
         openList=openList.filter((tile)=>{
@@ -166,7 +191,7 @@ const aStar=(maze,start,end,row,col)=>{
         if(currentTile.type === 'end' ){
             return currentTile;
         }
-        let neighbors=getNeighbors(currentTile, maze, row, col);
+        let neighbors=getNeighbors(currentTile, maze, row, col,walkType);
         neighbors.forEach((neighbor)=>{
             if(!closeList.find((t) => t._id === neighbor._id) &&
             !openList.find((t) => t._id === neighbor._id)){
@@ -183,9 +208,8 @@ const aStar=(maze,start,end,row,col)=>{
 
 export const solve=(req,res)=>{
     try{
-        const {maze,start,end,row,col}=req.body;
-        console.log(maze,'line 185')
-         let endOfPath=aStar(maze,start,end,row,col);
+        const {maze,start,end,row,col,walkType}=req.body;
+         let endOfPath=aStar(maze,start,end,row,col,walkType);
         if(endOfPath==null){
         return res.status(200).json({message:"There is no save path !",er:1})
         }
@@ -251,10 +275,9 @@ const calcObsticalDestance=(maze,start,end,row,col)=>{
 
 export const solveCustom=(req,res)=>{
     try{
-        const {maze,start,end,row,col}=req.body;
+        const {maze,start,end,row,col,walkType}=req.body;
         const newMaze=calcObsticalDestance(maze,start,end,row,col);
-        console.log(newMaze,'252')
-        let endOfPath=aStar(newMaze,start,end,row,col);
+        let endOfPath=aStar(newMaze,start,end,row,col,walkType);
         if(endOfPath==null){
         return res.status(200).json({message:"There is no save path !",er:1})
         }
