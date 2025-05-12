@@ -20,6 +20,8 @@ const MazeContextProvider=({children})=>{
     const [currentStep, setCurrentStep] = useState(null);
     const [mode,setMode]=useState(false);
     const [type,setType]=useState('start');
+    const [walkType,setWalkType]=useState(4);
+    const [testPath,setTestPath]=useState(null);
     const maze=useMemo(()=>{
         
      if(path){
@@ -43,12 +45,10 @@ const MazeContextProvider=({children})=>{
     const makePlayAnimation=(path)=>{
         setPlay(true);
         path=path.reverse();
-        console.log(path.length);
         let length=path.length;
         let i=setInterval(()=>{
             length--;
             setCurrentStep(path[length]);
-            console.log(path[length]);
             if(length==0){
                 Swal.fire({
                     position: "center",
@@ -59,7 +59,7 @@ const MazeContextProvider=({children})=>{
                   });
                 clearInterval(i);
             }
-        },500)
+        },250)
         setCurrentStep(null);
         setPlay(false);
     }
@@ -70,10 +70,10 @@ const MazeContextProvider=({children})=>{
             setAllMaze(null);
             const {data}=await axios.post("http://localhost:6565/maze/generate",{row,col});
             toast.success(data.message);
-            console.log(data);
             setAllMaze(data.maze);
             setStart(data.start);
             setEnd(data.end);
+            
         }catch(error){
             toast.error(error.response.data.message);
         }
@@ -85,15 +85,16 @@ const MazeContextProvider=({children})=>{
             setAllMaze(null);
             const {data}=await axios.post("http://localhost:6565/maze/generatecustom",{row,col});
             toast.success(data.message);
-            console.log(data);
             setAllMaze(data.maze);
             setStart(data.start);
             setEnd(data.end);
+            
         }catch(error){
             toast.error(error.response.data.message);
         }
     }
     const generateMaze=async ()=>{
+        setTestPath(null);
        if(mode){
            generateCustom();
     }
@@ -104,17 +105,19 @@ const MazeContextProvider=({children})=>{
     const solve=async ()=>{
 if(maze&&start&&end&&col&&row){
         try{
-            const {data}=await axios.post("http://localhost:6565/maze/solve",{row,col,start,end,maze});
+            const {data}=await axios.post("http://localhost:6565/maze/solve",{row,col,start,end,maze,walkType});
             if(data.er){
                 toast.error(data.message);
         setPlay(false);
 
             }
             setPath(data.path);
-            console.log(data.path);
+            setTestPath(data.test);
             makePlayAnimation(data.path);
+            
         }catch(error){
             console.log(error);
+            setTestPath(null);
         }
     }else{
         toast.warning("Enter All Data !");
@@ -129,24 +132,25 @@ if(maze&&start&&end&&col&&row){
   const solveCustomMaze=async()=>{
         if(maze&&start&&end&&col&&row){
         try{
-            const {data}=await axios.post("http://localhost:6565/maze/solvecustom",{row,col,start,end,maze});
+            const {data}=await axios.post("http://localhost:6565/maze/solvecustom",{row,col,start,end,maze,walkType});
             if(data.er){
                 toast.error(data.message);
                 setPlay(false);
-
             }
+            setTestPath(data.test);
             setPath(data.path);
-            console.log(data.path);
             makePlayAnimation(data.path);
         }catch(error){
             console.log(error);
+            setTestPath(null);
+
         }
     }else{
         toast.warning("Enter All Data !");
     }
 }
     return (
-        <MazeContext.Provider  value={{setAllMaze,allMaze,type,setType,mode,setMode,play,isTrained,setIsTrained,end,setEnd,setStart,start,col,row,setCol,setRow,maze,generateMaze,solveMaze}}>
+        <MazeContext.Provider  value={{setTestPath,testPath,walkType,setWalkType,setAllMaze,allMaze,type,setType,mode,setMode,play,isTrained,setIsTrained,end,setEnd,setStart,start,col,row,setCol,setRow,maze,generateMaze,solveMaze}}>
             {children}
         </MazeContext.Provider>
     )

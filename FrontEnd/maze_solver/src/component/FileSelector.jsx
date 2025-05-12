@@ -6,21 +6,23 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { MazeContext } from '../MazeContext';
+import { InfoContext } from './InfoContext';
 export default function FileSelector({epoch,learnRate,setTrainData,TrainData,setWeights}) {
     const [fileName,setFileName]=useState(null);
     const {isTrained,setIsTrained}=useContext(MazeContext);
     const [loading,setLoading]=useState(false);
+      const {setIsShow}=useContext(InfoContext);
+    
     const [rate,setRate]=useState(0);
     const learn=async ()=>{
           try{
             setLoading(true);
             const {data}=await axios.post("http://localhost:6565/train/send",{data:TrainData,learnRate,epoch});
             setWeights(data.weights);
-            console.log(data.weights);
             setIsTrained(true);
             toast.success(data.message);
             setRate(data.rate);
-            console.log(data);
+            setIsShow(true);
           }catch(error){
             console.log(error);
           }
@@ -49,6 +51,7 @@ export default function FileSelector({epoch,learnRate,setTrainData,TrainData,set
           const {data}=await axios.get("http://localhost:6565/train/cancele");
           toast.info(data.message);
           setWeights(null);
+          setIsShow(false);
         }catch(error){
           toast.error(error.response.data.message);
         }

@@ -127,7 +127,6 @@ function getNeighbors(tile, maze, row, col,number) {
         neighbors.push(temp);
         temp.isDialog=false;
     }
-    console.log("here 104");
     if(number==4)
     return neighbors;
 
@@ -183,13 +182,12 @@ const aStar=(maze,start,end,row,col,walkType)=>{
             }
         })
         if (!currentTile) return null;
-        console.log("line129")
         closeList.push(currentTile);
         openList=openList.filter((tile)=>{
             return tile._id!=currentTile._id
         })
         if(currentTile.type === 'end' ){
-            return currentTile;
+            return {c:currentTile,t:closeList};
         }
         let neighbors=getNeighbors(currentTile, maze, row, col,walkType);
         neighbors.forEach((neighbor)=>{
@@ -209,10 +207,11 @@ const aStar=(maze,start,end,row,col,walkType)=>{
 export const solve=(req,res)=>{
     try{
         const {maze,start,end,row,col,walkType}=req.body;
-         let endOfPath=aStar(maze,start,end,row,col,walkType);
-        if(endOfPath==null){
-        return res.status(200).json({message:"There is no save path !",er:1})
+        let temp=aStar(maze,start,end,row,col,walkType);
+        if(temp==null){
+            return res.status(200).json({message:"There is no save path !",er:1})
         }
+        let endOfPath=temp.c;
         let path=[];
         let current=endOfPath;
         while(true){
@@ -224,12 +223,37 @@ export const solve=(req,res)=>{
             current=current.parent;
         }
         path.reverse();
-         return res.status(200).json({message:"success !",path})
+         return res.status(200).json({message:"success !",path,test:temp.t})
     }catch(error){
         return res.status(500).json({message:"cd"})
     }
 }
 
+export const solveCustom=(req,res)=>{
+    try{
+        const {maze,start,end,row,col,walkType}=req.body;
+        const newMaze=calcObsticalDestance(maze,start,end,row,col);
+        let temp=aStar(newMaze,start,end,row,col,walkType);
+        if(temp==null){
+            return res.status(200).json({message:"There is no save path !",er:1})
+        }
+        let endOfPath=temp.c;
+        let path=[];
+        let current=endOfPath;
+        while(true){
+            if(current._type=='start'){
+                path.push(current.location);
+                break;
+            }
+            path.push(current.location);
+            current=current.parent;
+        }
+        path.reverse();
+         return res.status(200).json({message:"success !",path,test:temp.t});
+    }catch(error){
+        return res.status(500).json({message:"cd"})
+    }
+}
 
 
 const calcObsticalDestance=(maze,start,end,row,col)=>{
@@ -273,30 +297,6 @@ const calcObsticalDestance=(maze,start,end,row,col)=>{
 }
 
 
-export const solveCustom=(req,res)=>{
-    try{
-        const {maze,start,end,row,col,walkType}=req.body;
-        const newMaze=calcObsticalDestance(maze,start,end,row,col);
-        let endOfPath=aStar(newMaze,start,end,row,col,walkType);
-        if(endOfPath==null){
-        return res.status(200).json({message:"There is no save path !",er:1})
-        }
-        let path=[];
-        let current=endOfPath;
-        while(true){
-            if(current._type=='start'){
-                path.push(current.location);
-                break;
-            }
-            path.push(current.location);
-            current=current.parent;
-        }
-        path.reverse();
-         return res.status(200).json({message:"success !",path})
-    }catch(error){
-        return res.status(500).json({message:"cd"})
-    }
-}
 
 
 

@@ -67,6 +67,8 @@ export class Perceptron {
 
     testAll(data){
        // console.log("object")
+       let count=0;
+       while(true){
        let correct=0;
         data.map((element)=>{
            // console.log("object")
@@ -78,7 +80,16 @@ export class Perceptron {
 
         })
         let accuracy = (correct / data.length) * 100;
-    return  accuracy.toFixed(2);
+        if(accuracy>93){
+        return  accuracy.toFixed(2);
+
+        }
+        count++;
+        if(count==this.epochs){
+        return  accuracy.toFixed(2);
+
+        }
+    }
     }
     compute(values){//values is array have the x values and 1 for bias
         let sum=0;

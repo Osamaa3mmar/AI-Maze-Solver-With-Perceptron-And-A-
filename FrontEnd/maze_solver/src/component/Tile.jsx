@@ -9,29 +9,39 @@ import End from "./../../public/End.png";
 import agent from "./../../public/Agent2.png";
 import {  useContext, useState } from "react";
 import { MazeContext } from "../MazeContext";
-export default function Tile({_type,_location, size,_elevation,isAgent,_distanceToObstacle ,onPath}) {
+import { InfoContext } from "./InfoContext";
+export default function Tile({_type,_location,isTest, size,_elevation,isAgent,_distanceToObstacle ,onPath}) {
   const [status,setStatus]=useState(null);
-  const {type,mode,allMaze,setAllMaze,end,start,setStart,setEnd}=useContext(MazeContext);
+  const {setCurrent}=useContext(InfoContext);
+  
+  const {type,mode,allMaze,setAllMaze,end,start,setStart,setEnd,testPath}=useContext(MazeContext);
   const checkSave=async()=>{
     try{
       
       const type2= _type=="water"||_type=='obstacle'?1:0;
       let values=[type2,_elevation,_distanceToObstacle];
       const {data}=await axios.post("http://localhost:6565/train/test",{values});
-      console.log(data);
       if(data.result==1){
         setStatus("green");
       }
       else{
         setStatus("red")
       }
+      setCurrent({
+        type:_type,
+        elevation:_elevation,
+        distanceToObstacle:_distanceToObstacle,
+        isTest,
+        onPath,
+        location:_location,
+        status:data.result==1?1:0
+      })
     }catch(e){
       console.log(e);
     }
   }
 const setTileTo=()=>{
   const tempMaze = allMaze.map(row => row.map(cell => ({ ...cell })));
-
   // Update the correct tile
   tempMaze[_location.i][_location.j]._type = type;
   if(type=="start"){
@@ -58,7 +68,7 @@ tempMaze[end.i][end.j]._type="grass";
         boxSizing: "border-box",
         borderRadius: "6px",
         overflow: "hidden",
-        outline:`3px solid ${isAgent?"orange":onPath?"blue":status}`
+        outline:`${isAgent?"3px":"2px"} solid ${isAgent?"orange":onPath?"blue":isTest==true?"purple":status}`
       }}
     >
       {/* <Box  className={style.overlayBox} sx={{position:"absolute",zIndex:2,background:"rgba(0,0,0,0.2)",width:"100%",height:"100%"}}>

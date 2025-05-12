@@ -16,7 +16,6 @@ export default function GenerateBtns({flag,setLr,setEpoch,epoch,lr}) {
       toast.info("Generate Maze Before !");
     }
   }
-  console.log(maze);
   return (
     <Stack gap={2}>
       <Stack direction={"row"} gap={2}>
@@ -27,7 +26,7 @@ export default function GenerateBtns({flag,setLr,setEpoch,epoch,lr}) {
         </Stack>
 <Stack direction={"row"} gap={2}>
         <Button variant="outlined" onClick={()=>{generateMaze()}}>Generate Maze</Button>
-        <Button variant="contained" disabled={!(isTrained)} loading={loading} onClick={solve}>Solve</Button>
+        <Button variant="contained"  disabled={!(isTrained)} loading={loading} onClick={solve}>Solve</Button>
         <TextField  value={row} label={"Row"} onChange={(e)=>{setRow(e.target.value)}} sx={{width:"100px"}}/>
         <TextField value={col} label={"Col"} onChange={(e)=>{setCol(e.target.value)}} sx={{width:"100px"}}/>
         </Stack>
