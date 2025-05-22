@@ -94,8 +94,8 @@ get isDialog(){
         if(this.type=='start'){
             return 0;
         }
-        this.cost=this.parent.cost+this.isDialog?1.4:1;
-        return this.parent.cost+this.isDialog?1.4:1;
+       this.cost = this.parent.cost + (this.isDialog ? 1.4 : 1);
+return this.cost;
     }
     typeToNum(){
         return this.type=='water'||this.type=='obstacle'?1:0;

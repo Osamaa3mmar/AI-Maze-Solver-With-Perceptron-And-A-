@@ -82,15 +82,20 @@ export default function FileSelector({epoch,learnRate,setTrainData,TrainData,set
             :<>
              <Box sx={{display:"flex",alignItems:"center",gap:"4px"}}>
              <Box sx={{outline:`2px solid rgba(0,255,0,0.6)`,borderRadius:"50%",width:"8px ",height:"8px",background:`${isTrained?"rgba(0,255,0,0.2)":"rgba(255,0,0,0.2)"}`}}></Box>
-             <Typography fontWeight={500} sx={{}} >Training accuracy: {rate.accuracy}%</Typography>
+             <Typography fontWeight={500} sx={{}} >Training Data Accuracy: {rate.accuracy}%</Typography>
            </Box>
-           {/* <Box sx={{display:"flex",alignItems:"center",gap:"4px"}}>
-             <Box sx={{outline:`2px solid rgba(0,255,0,0.6)`,borderRadius:"50%",width:"8px ",height:"8px",background:`${isTrained?"rgba(0,255,0,0.2)":"rgba(255,0,0,0.2)"}`}}></Box>
-             <Typography fontWeight={500} sx={{}} >Test Data Error Rate : {rate.error.error}%</Typography>
-           </Box> */}
+           
+           <Box sx={{display:"flex",alignItems:"center",gap:"4px"}}>
+             <Box sx={{outline:`2px solid rgba(255,0,0,0.6)`,borderRadius:"50%",width:"8px ",height:"8px",background:`${isTrained?"rgba(255,0,0,0.2)":"rgba(255,0,0,0.2)"}`}}></Box>
+             <Typography fontWeight={500} sx={{}} >Training Data Error Rate : {(100 - rate.accuracy).toFixed(2)}%</Typography>
+           </Box>
            <Box sx={{display:"flex",alignItems:"center",gap:"4px"}}>
              <Box sx={{outline:`2px solid rgba(0,255,0,0.6)`,borderRadius:"50%",width:"8px ",height:"8px",background:`${isTrained?"rgba(0,255,0,0.2)":"rgba(255,0,0,0.2)"}`}}></Box>
-             <Typography fontWeight={500} sx={{}} >Mean Squared Error (MSE) : {rate.error.loss}%</Typography>
+             <Typography fontWeight={500} sx={{}} >Test Data Accuracy : {(100-rate.error.error)}%</Typography>
+           </Box>
+             <Box sx={{display:"flex",alignItems:"center",gap:"4px"}}>
+             <Box sx={{outline:`2px solid rgba(255,0,0,0.6)`,borderRadius:"50%",width:"8px ",height:"8px",background:`${isTrained?"rgba(255,0,0,0.2)":"rgba(255,0,0,0.2)"}`}}></Box>
+             <Typography fontWeight={500} sx={{}} >Test Data Error Rate : {rate.error.error}%</Typography>
            </Box>
            </>
             }

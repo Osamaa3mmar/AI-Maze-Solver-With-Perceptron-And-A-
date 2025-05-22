@@ -1,5 +1,5 @@
-import { Box, Button, Checkbox, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from "@mui/material";
-import { useContext, useState } from "react";
+import { Box, Button, Checkbox, FormControlLabel } from "@mui/material";
+import { useContext, useEffect } from "react";
 import { MazeContext } from "../MazeContext";
 import mode2 from "../../public/Mode2.png";
 import mode1 from "../../public/Mode1.png";
@@ -19,6 +19,27 @@ export default function Play() {
       setType("start")
     }
   }
+   useEffect(() => {
+    const handleKeyDown = (event) => {
+  const key = event.key.toLowerCase();
+
+  if (key === "t") {
+    setMode((prev) => !prev); 
+    return;
+  }
+
+  if (!mode) return; 
+
+  if (key === "s") setType("start");
+  else if (key === "e") setType("end");
+  else if (key === "g") setType("grass");
+  else if (key === "o") setType("obstacle");
+  else if (key === "w") setType("water");
+};
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mode, setType,setMode]);
   return (
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
       <Box>

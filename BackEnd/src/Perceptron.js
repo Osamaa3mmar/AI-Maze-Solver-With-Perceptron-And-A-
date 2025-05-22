@@ -51,7 +51,7 @@ export class Perceptron {
         let avgTrainingLoss = totalLoss / (this.epochs * data.length);
 
         return{error:((totalError/(this.epochs*data.length))*100).toFixed(2),
-            loss:avgTrainingLoss.toFixed(8)
+            loss:avgTrainingLoss.toFixed(2)
         };
     }
     
@@ -68,7 +68,7 @@ export class Perceptron {
     testAll(data){
        // console.log("object")
        let count=0;
-       while(true){
+       for(let i=0;i<this.epochs;i++){
        let correct=0;
         data.map((element)=>{
            // console.log("object")
@@ -80,10 +80,7 @@ export class Perceptron {
 
         })
         let accuracy = (correct / data.length) * 100;
-        if(accuracy>93){
-        return  accuracy.toFixed(2);
-
-        }
+        
         count++;
         if(count==this.epochs){
         return  accuracy.toFixed(2);

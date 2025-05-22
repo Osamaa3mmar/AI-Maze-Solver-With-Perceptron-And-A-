@@ -100,7 +100,7 @@ const typeToNum=(type)=>{
 function getNeighbors(tile, maze, row, col,number) {
     let neighbors=[];
     let temp;
-    if(tile.location.i-1>=0&&cell.test([typeToNum(maze[tile.location.i-1][tile.location.j]._type),tile.elevation,tile.distanceToObstacle])){
+    if(tile.location.i-1>=0&&cell.test([typeToNum(maze[tile.location.i-1][tile.location.j]._type),maze[tile.location.i-1][tile.location.j]._elevation,maze[tile.location.i-1][tile.location.j]._distanceToObstacle ])){
         temp=new Tile(maze[tile.location.i-1][tile.location.j]);
         temp.parent=tile;
         neighbors.push(temp);
@@ -109,19 +109,19 @@ function getNeighbors(tile, maze, row, col,number) {
 
     }
     
-    if(tile.location.i+1<row&&cell.test([typeToNum(maze[tile.location.i+1][tile.location.j]._type),tile.elevation,tile.distanceToObstacle])){
+    if(tile.location.i+1<row&&cell.test([typeToNum(maze[tile.location.i+1][tile.location.j]._type),maze[tile.location.i+1][tile.location.j]._elevation,maze[tile.location.i+1][tile.location.j]._distanceToObstacle ])){
         temp=new Tile(maze[tile.location.i+1][tile.location.j]);
         temp.parent=tile;
         neighbors.push(temp);
         temp.isDialog=false;
     }
-    if(tile.location.j-1>=0&&cell.test([typeToNum(maze[tile.location.i][tile.location.j-1]._type),tile.elevation,tile.distanceToObstacle])){
+    if(tile.location.j-1>=0&&cell.test([typeToNum(maze[tile.location.i][tile.location.j-1]._type),maze[tile.location.i][tile.location.j-1]._elevation,maze[tile.location.i][tile.location.j-1]._distanceToObstacle ])){
         temp=new Tile(maze[tile.location.i][tile.location.j-1]);
         temp.parent=tile;
         neighbors.push(temp);
         temp.isDialog=false;
     }
-    if(tile.location.j+1<col&&cell.test([typeToNum(maze[tile.location.i][tile.location.j+1]._type),tile.elevation,tile.distanceToObstacle])){
+    if(tile.location.j+1<col&&cell.test([typeToNum(maze[tile.location.i][tile.location.j+1]._type),maze[tile.location.i][tile.location.j+1]._elevation,maze[tile.location.i][tile.location.j+1]._distanceToObstacle ])){
         temp=new Tile(maze[tile.location.i][tile.location.j+1]);
         temp.parent=tile;
         neighbors.push(temp);
@@ -130,25 +130,25 @@ function getNeighbors(tile, maze, row, col,number) {
     if(number==4)
     return neighbors;
 
-    if(tile.location.j+1<col&&tile.location.i+1<row&&cell.test([typeToNum(maze[tile.location.i+1][tile.location.j+1]._type),tile.elevation,tile.distanceToObstacle])){
+    if(tile.location.j+1<col&&tile.location.i+1<row&&cell.test([typeToNum(maze[tile.location.i+1][tile.location.j+1]._type),maze[tile.location.i+1][tile.location.j+1]._elevation,maze[tile.location.i+1][tile.location.j+1]._distanceToObstacle ])){
         temp=new Tile(maze[tile.location.i+1][tile.location.j+1]);
         temp.parent=tile;
         neighbors.push(temp);
         temp.isDialog=true;
     }
-    if(tile.location.j-1>=0&&tile.location.i+1<row&&cell.test([typeToNum(maze[tile.location.i+1][tile.location.j-1]._type),tile.elevation,tile.distanceToObstacle])){
+    if(tile.location.j-1>=0&&tile.location.i+1<row&&cell.test([typeToNum(maze[tile.location.i+1][tile.location.j-1]._type),maze[tile.location.i+1][tile.location.j-1]._elevation,maze[tile.location.i+1][tile.location.j-1]._distanceToObstacle ])){
         temp=new Tile(maze[tile.location.i+1][tile.location.j-1]);
         temp.parent=tile;
         neighbors.push(temp);
         temp.isDialog=true;
     }
-    if(tile.location.j+1<col&&tile.location.i-1>=0&&cell.test([typeToNum(maze[tile.location.i-1][tile.location.j+1]._type),tile.elevation,tile.distanceToObstacle])){
+    if(tile.location.j+1<col&&tile.location.i-1>=0&&cell.test([typeToNum(maze[tile.location.i-1][tile.location.j+1]._type),maze[tile.location.i-1][tile.location.j+1]._elevation,maze[tile.location.i-1][tile.location.j+1]._distanceToObstacle ])){
         temp=new Tile(maze[tile.location.i-1][tile.location.j+1]);
         temp.parent=tile;
         neighbors.push(temp);
         temp.isDialog=true;
     }
-     if(tile.location.j-1>=0&&tile.location.i-1>=0&&cell.test([typeToNum(maze[tile.location.i-1][tile.location.j-1]._type),tile.elevation,tile.distanceToObstacle])){
+     if(tile.location.j-1>=0&&tile.location.i-1>=0&&cell.test([typeToNum(maze[tile.location.i-1][tile.location.j-1]._type),maze[tile.location.i-1][tile.location.j-1]._elevation,maze[tile.location.i-1][tile.location.j-1]._distanceToObstacle ])){
         temp=new Tile(maze[tile.location.i-1][tile.location.j-1]);
         temp.parent=tile;
         neighbors.push(temp);
@@ -187,7 +187,7 @@ const aStar=(maze,start,end,row,col,walkType)=>{
             return tile._id!=currentTile._id
         })
         if(currentTile.type === 'end' ){
-            return {c:currentTile,t:closeList};
+            return {c:currentTile,t:[...closeList,...openList]};
         }
         let neighbors=getNeighbors(currentTile, maze, row, col,walkType);
         neighbors.forEach((neighbor)=>{

@@ -68,7 +68,7 @@ tempMaze[end.i][end.j]._type="grass";
         boxSizing: "border-box",
         borderRadius: "6px",
         overflow: "hidden",
-        outline:`${isAgent?"3px":"2px"} solid ${isAgent?"orange":onPath?"blue":isTest==true?"purple":status}`
+        outline:`${isAgent?"4px":"3px"} solid ${isAgent?"orange":onPath?"blue":isTest==true?"purple":status}`
       }}
     >
       {/* <Box  className={style.overlayBox} sx={{position:"absolute",zIndex:2,background:"rgba(0,0,0,0.2)",width:"100%",height:"100%"}}>

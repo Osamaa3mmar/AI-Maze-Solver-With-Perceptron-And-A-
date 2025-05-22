@@ -4,7 +4,6 @@ import { InfoContext } from "./InfoContext";
 
 export default function ModalInfo() {
   const {current}=useContext(InfoContext);
-  console.log(current);
     const locationText = current?.location ? `${current.location.i}, ${current.location.j}` : 'Unknown';
 const statusText = current?.status === 1 ? 'Success' : 'Failure';
   const statusColor = current?.status === 1 ? 'success' : 'error';
@@ -42,7 +41,7 @@ const statusText = current?.status === 1 ? 'Success' : 'Failure';
         <ListItem>
           <ListItemText 
             primary="Distance to Obstacle" 
-            secondary={current?.distanceToObstacle !== undefined ? current?.distanceToObstacle?.toFixed(4) : 'N/A'} 
+            secondary={current?.distanceToObstacle !== undefined ? current?.distanceToObstacle : 'N/A'} 
           />
         </ListItem>
         <ListItem>
